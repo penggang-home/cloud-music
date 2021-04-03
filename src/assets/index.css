@@ -726,7 +726,7 @@ ol {
 }
 
 .playlist-container .top-wrap span {
-  font-size: 17px;
+  font-size: 16px;
 }
 
 .playlist-container .top-wrap .img-wrap {
@@ -764,13 +764,13 @@ ol {
 }
 
 .playlist-container .top-wrap .info-wrap .play-wrap {
-  width: 120px;
+  width: 130px;
   height: 35px;
   border-radius: 4px;
   background: linear-gradient(to right, #e85e4d, #c6483c);
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   margin-bottom: 25px;
 }
 
@@ -778,9 +778,12 @@ ol {
   color: white;
 }
 
-.playlist-container .top-wrap .info-wrap .play-wrap span.iconfont {
-  margin-right: 8px;
+.play-wrap{
+  user-select: none;
 }
+/* .playlist-container .top-wrap .info-wrap .play-wrap span.iconfont {
+  margin-right: 8px;
+} */
 
 .playlist-container .top-wrap .info-wrap .play-wrap span.text {
   font-size: 16px;
@@ -1390,7 +1393,6 @@ ol {
 #app .index-container {
   height: 100%;
   padding-top: 46px;
-  padding-bottom: 60px;
 }
 
 .cursor-pointer{
@@ -1406,4 +1408,45 @@ ol {
 }
 .top-container .center .el-input--prefix .el-input__inner{
   border-radius: 50px;
+}
+.m-0{
+  margin: 0 !important;
+}
+.el-backtop{
+  bottom: 80px !important;
+}
+
+/* 播放器样式重置 */
+.aplayer{
+  margin: 0;
+  border-radius: 0;
+}
+.index-container .player{
+  height: auto;
+}
+.aplayer.aplayer-withlrc .aplayer-pic,.aplayer.aplayer-withlrc .aplayer-info{
+  height: 68px;
+}
+.aplayer.aplayer-withlrc .aplayer-lrc{
+  transform: translateY(-20px);
+}
+.aplayer .aplayer-lrc:after, .aplayer .aplayer-lrc:before{
+  content: none;
+}
+/* fixed：true第二次改动 */
+.aplayer .aplayer-pic{
+  width: 76px;
+}
+.aplayer.aplayer-fixed,.aplayer.aplayer-fixed .aplayer-body{
+  max-width: none;
+}
+.aplayer.aplayer-withlist .aplayer-info,.aplayer .aplayer-info{
+  width: calc(100vw - 66px);
+}
+.aplayer.aplayer-fixed .aplayer-lrc{
+  z-index: 999;
+  transform: translateY(-14px);
+}
+.aplayer.aplayer-fixed .aplayer-miniswitcher{
+  display: none;
 }

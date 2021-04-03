@@ -1,9 +1,8 @@
 <template>
   <div class="top-container">
-    <!-- <input type="text" autocomplete="off" placeholder="搜索" class="el-input__inner" @keyup.enter="search" v-model="inputValue" /> -->
     <div class="left dflex">
+      <img src="/images/home.svg" class="homeImg" align="middle" alt="" />
       <el-tooltip class="item" effect="dark" content="去主页：www.bookbook.cc" placement="right">
-        <img src="~/assets/images/home.svg" class="homeImg" align="middle" alt="" />
         <a href="https://www.bookbook.cc" target="blank">bookbook.cc</a>
       </el-tooltip>
     </div>
@@ -21,6 +20,7 @@
       ></el-autocomplete>
     </div>
     <div class="right">
+      <el-switch v-model="state" @change="changeState"> </el-switch>
       <el-tooltip class="item" effect="dark" content="指不定哪天派上用场~" placement="bottom">
         <el-button type="danger" size="small" round v-popover:popover>
           <i class="iconfont icon-power"></i>
@@ -41,22 +41,35 @@ export default {
       inputValue: '',
       // 热搜列表
       searchHot: [],
+      // 热搜推荐列表
+      searchHotList: [],
       // 用于标识是系统请求，还是用户请求
       auth: '',
       // 暂存搜索关键字
       searchKeywords: '',
+      // 开关状态  是否显示音乐面板
+      state: true,
     }
   },
   created() {
     // 获取默认搜索关键词
     this.getDefaultKeywords()
   },
+  computed: {},
   methods: {
+    // 改变开关装填的回调
+    changeState() {
+      // this.$store.commit('updateIsControl', state)
+      this.$Bus.$emit('switchState',this.state)
+    },
+    // 返回主页
+    goHome() {
+      this.$router.push('/discovery')
+    },
     // 搜索方法
     search() {
       // 新搜索结果等于旧搜索结果 取消搜索
-      if (this.$route.query.q == this.inputValue) {
-        console.log('相同搜索')
+      if (this.$route.query.q == this.inputValue.trim()) {
         return
       }
 
@@ -85,16 +98,16 @@ export default {
     async getSearchAsync(queryString, cb) {
       if (this.inputValue == '') {
         // 如果有数据就不需要重新请求
-        if (this.searchHot != '' && this.auth != 'user') return cb(this.searchHot)
+        if (this.searchHotList != '') return cb(this.searchHotList)
         this.auth = 'system'
-        this.searchHot = []
+        this.searchHotList = []
         // 获取推荐搜索信息
         const { data: data } = await this.$axios.get('/search/hot/')
         if (data.code == 200) {
           data.result.hots.forEach(item => {
-            this.searchHot.push({ value: item.first })
+            this.searchHotList.push({ value: item.first })
           })
-          cb(this.searchHot)
+          cb(this.searchHotList)
         }
       } else {
         // 判断有没有输入新的字符
@@ -140,7 +153,6 @@ export default {
           cb(this.searchHot)
         }
       }
-      console.log('getSearchAsync')
     },
     // 创建状态过滤器
     handleSelect(item) {

@@ -1,11 +1,7 @@
 <template>
-  <div
-    v-loading="loading"
-    element-loading-text="拼命加载中"
-    element-loading-spinner="el-icon-loading"
-    style="width: 100%"
-  >
-    加载
+  <div>
+    parseInt(document.querySelector("#app > div.index-container > div.main").scrollTop + document.querySelector("#app > div.index-container >
+    div.main").offsetHeight) / document.querySelector("#app > div.index-container > div.main").scrollHeight
   </div>
 </template>
 
@@ -13,7 +9,6 @@
 export default {
   data() {
     return {
-     
       loading: true,
     }
   },

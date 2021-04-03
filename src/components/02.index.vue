@@ -1,5 +1,5 @@
 <template>
-  <div class="index-container">
+  <div :class="['index-container', { 'padding-bottom': state }]">
     <div class="nav">
       <ul>
         <li>
@@ -30,9 +30,22 @@
     </div>
     <div class="main">
       <router-view></router-view>
+      <el-backtop target=".main"></el-backtop>
     </div>
-    <div class="player">
-      <audio :src="musicUrl" controls autoplay ref="audio" loop></audio>
+    <div :class="['player', { hide: !state }]">
+      <aplayer
+        ref="aplayer"
+        :audio="audioInfo"
+        :lrcType="1"
+        :volume.sync="volume"
+        :mini.sync="mini"
+        :loop.sync="loop"
+        :order.sync="order"
+        :listFolded.sync="listFolded"
+        :fixed="fixed"
+        :autoplay="autoplay"
+        @playing="play"
+      />
     </div>
   </div>
 </template>
@@ -45,33 +58,67 @@ export default {
   name: 'index',
   data() {
     return {
-      // 1.子传父
-      // musicUrl: 'test',
+      // 播放列表最大高度
+      // listMaxHeight: '130',
+      volume: 0.7,
+      // 迷你模式
+      mini: false,
+      // 音频循环播放, 可选值: 'all', 'one', 'none'
+      loop: 'all',
+      // 音频循环顺序, 可选值: 'list', 'random'
+      order: 'random',
+      // 自动播放
+      autoplay: true,
+      // 吸底模式
+      fixed: true,
+      // 列表默认折叠
+      listFolded: true,
+      state: true,
     }
   },
   created() {
-    // 2. 接收利用事件总线传递的数据
-    // this.$Bus.$on('newMusic', url => {
-    //   console.log('url', url)
-    // })
+    this.$Bus.$on('switchState', state => {
+      this.state = state
+    })
   },
+
   computed: {
     // 3.通过vuex获取
-    ...mapState(['musicUrl','random']),
+    ...mapState(['audioInfo']),
   },
-  watch:{
-    random(random){
-      console.log('newRandom',random);
-      // 调用 audio对象上的方法
-      // 常见方法：MDN https://developer.mozilla.org/zh-CN/docs/Web/API/HTMLMediaElement
-      this.$refs.audio.play()
-    }
-  }
+  methods: {
+    // 播放事件
+    play(info) {
+      console.log(this.$refs.aplayer.currentSettings)
+      // console.log(info)
+    },
+    // 删除功能待实现
+    remove(index) {
+      // this.$refs.aplayer.audio.splice(1, 1)
+      // this.$refs.aplayer.audio.splice(index, 1)
+    },
+  },
 }
 </script>
 
 <style scope>
-.main{
+/* 锚点跟踪 不懂别动 */
+.main {
   overflow-anchor: none;
+}
+.player {
+  transition: all 0.3s;
+}
+.hide {
+  transform-origin: bottom;
+  transform: rotateX(90deg);
+}
+.icon-shanchu:before {
+  color: #f56c6c;
+  position: relative;
+  right: 5px;
+}
+.padding-bottom{
+  padding-bottom: 66px;
 }
 </style>

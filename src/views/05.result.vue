@@ -2,10 +2,11 @@
   <div class="result-container">
     <div class="title-wrap">
       <h2 class="title">{{ queryInfo.keywords }}</h2>
-      <span class="sub-title">{{ `共找到${count}个结果` }}</span>
+      <span class="sub-title">{{ `共找到${count - 1 || 0}个结果` }}</span>
     </div>
     <el-tabs v-model="activeIndex">
       <el-tab-pane label="歌曲" name="songs">
+        <el-alert v-if="count < 1" title="什么东西也没有耶~" effect="dark" type="info" center show-icon :closable="false"> </el-alert>
         <table class="el-table infinite-list">
           <thead>
             <th></th>
@@ -15,8 +16,8 @@
             <th>时长</th>
           </thead>
           <tbody>
-            <tr class="el-table__row" @dblclick="playMusic(item.id, item.artists[0].name)" v-for="(item, index) in searchResult.songs" :key="index">
-              <td>{{ index + 1 }}</td>
+            <tr class="el-table__row" @dblclick="playMusic(item.id, item.name)" v-for="(item, index) in searchResult.songs" :key="index">
+              <td>{{ limit.songs * (queryInfo.offset - 1) + index + 1 }}</td>
               <td>
                 <div class="song-wrap">
                   <div class="name-wrap">
@@ -35,10 +36,21 @@
             </tr>
           </tbody>
         </table>
+        <el-pagination
+          @size-change="sizeChange"
+          @current-change="currentPageChange"
+          :current-page="queryInfo.offset"
+          :page-sizes="[5, 10, 15, 20, 50]"
+          :page-size="limit.songs"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="count - 1"
+        >
+        </el-pagination>
       </el-tab-pane>
       <el-tab-pane label="歌单" name="lists">
+        <el-alert v-if="count < 1" title="什么东西也没有耶~" effect="dark" type="info" center show-icon :closable="false"> </el-alert>
         <div class="items">
-          <div class="item" v-for="(item, index) in searchResult.playlists" :key="index">
+          <div class="item" v-for="(item, index) in searchResult.playlists" @click="playList(item.id)" :key="index">
             <div class="img-wrap">
               <div class="num-wrap">
                 播放量：
@@ -50,8 +62,19 @@
             <p class="name">{{ item.name }}</p>
           </div>
         </div>
+        <el-pagination
+          @size-change="sizeChange"
+          @current-change="currentPageChange"
+          :current-page="queryInfo.offset"
+          :page-sizes="[5, 10, 15, 20, 50]"
+          :page-size="limit.playlists"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="count"
+        >
+        </el-pagination>
       </el-tab-pane>
       <el-tab-pane label="MV" name="mv">
+        <el-alert v-if="count < 1" title="什么东西也没有耶~" effect="dark" type="info" center show-icon :closable="false"> </el-alert>
         <div class="items mv">
           <div class="item" v-for="(item, index) in searchResult.mvs" :key="index">
             <div class="img-wrap">
@@ -69,13 +92,23 @@
             </div>
           </div>
         </div>
+        <el-pagination
+          @size-change="sizeChange"
+          @current-change="currentPageChange"
+          :current-page="queryInfo.offset"
+          :page-sizes="[4, 8, 12, 16, 20, 52]"
+          :page-size="limit.mvs"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="count"
+        >
+        </el-pagination>
       </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   name: 'result',
   data() {
@@ -86,9 +119,14 @@ export default {
         // type: 搜索类型；默认为 1 即单曲 , 取值意义 : 1: 单曲, 10: 专辑, 100: 歌手, 1000: 歌单, 1002: 用户, 1004: MV, 1006: 歌词, 1009: 电台, 1014: 视频, 1018:综合
         type: 1,
         // limit : 返回数量 , 默认为 30
-        limit: 30,
+        // limit: 10,
         // offset : 偏移数量，用于分页 , 如 : 如 :( 页数 -1)*30, 其中 30 为 limit 的值 , 默认为 0
         offset: 1,
+      },
+      limit: {
+        songs: 10,
+        playlists: 10,
+        mvs: 8,
       },
       // 搜索结果
       searchResult: [],
@@ -99,9 +137,6 @@ export default {
     }
   },
   computed: {
-    // 从vuex里导入 需要的 歌曲信息
-    // ...mapState(['searchMusicInfo', 'currentMusicInfo']),
-    ...mapState(['currentMusicInfo']),
     // watch的路由信息
     searchQueryInfo() {
       return this.$route.query.q
@@ -110,15 +145,8 @@ export default {
   created() {
     // 初次查询信息
     this.queryInfo.keywords = this.$route.query.q
-    // 有可能没传入 所以加入 ||
-    this.queryInfo.type = this.$route.query.type || 1
-    this.queryInfo.limit = this.$route.query.limit || 30
+    // this.queryInfo.type = this.$route.query.type || 1
     this.searchMusic()
-  },
-  destroyed() {
-    console.log('destroyed')
-    console.log(this.disabled)
-    this.disabled = false
   },
   watch: {
     // 切换面板 查询信息
@@ -151,17 +179,45 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['getMusicInfo']),
+    // 页码发生改变
+    sizeChange(newVal) {
+      if (this.activeIndex == 'songs') {
+        this.limit.songs = newVal
+      } else if (this.activeIndex == 'lists') {
+        this.limit.playlists = newVal
+      } else {
+        this.limit.mvs = newVal
+      }
+      this.searchMusic()
+    },
+    // 页码发生变化
+    currentPageChange(newVal) {
+      this.queryInfo.offset = newVal
+
+      this.searchMusic()
+    },
     // 搜索音乐
     async searchMusic() {
+      let limit
+      if (this.activeIndex == 'songs') {
+        limit = this.limit.songs
+      } else if (this.activeIndex == 'lists') {
+        limit = this.limit.playlists
+      } else {
+        limit = this.limit.mvs
+      }
       // 获取歌曲信息
+
       const { data: data } = await this.$axios.get('/search', {
         params: {
           keywords: this.queryInfo.keywords,
-          type: this.queryInfo.type || 1,
-          limit: this.queryInfo.limit || 30,
-          offset: this.queryInfo.offset || 1,
+          type: this.queryInfo.type,
+          limit: limit,
+          offset: (this.queryInfo.offset - 1) * limit,
         },
       })
+      console.log('data: ', data)
       if (data.code == 200) {
         this.count = data.result.songCount || data.result.playlistCount || data.result.mvCount
         this.searchResult = data.result
@@ -169,11 +225,15 @@ export default {
     },
     // 播放音乐
     playMusic(id, name) {
-      this.$store.dispatch('getMusicUrl', id)
+      this.$store.dispatch('getAudioInfo', id)
       this.$notify({
-        title: '开始播放：' + this.queryInfo.keywords + ' ' + name,
+        title: '开始播放：' + name,
         offset: 50,
       })
+    },
+    // 查看歌单
+    playList(id) {
+      this.$router.push(`/playlist?id=${id}`)
     },
   },
 }
@@ -186,5 +246,8 @@ td,
 song-wrap,
 name-wrap {
   user-select: none;
+}
+.el-pagination {
+  margin-top: 10px;
 }
 </style>

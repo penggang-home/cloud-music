@@ -6,6 +6,13 @@ import './axios/index'
 import store from './store'
 import mixins from './utils/mixin'
 
+// 导入Aplayer
+import APlayer from '@moefe/vue-aplayer';
+Vue.use(APlayer, {
+  defaultCover: './assets/images/cat.jpg',
+  productionTip: true,
+});
+
 // 导入 Element_ui
 import ElementUI from 'element-ui'
 // 导入 Element-ui 样式
@@ -19,6 +26,7 @@ import 'nprogress/nprogress.css'
 // 导入全局初始化样式
 import './assets/index.css'
 
+// 全局混入
 Vue.mixin(mixins)
 
 Vue.config.productionTip = false

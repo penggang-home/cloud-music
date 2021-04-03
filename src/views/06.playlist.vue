@@ -2,7 +2,8 @@
   <div class="playlist-container">
     <div class="top-wrap">
       <div class="img-wrap">
-        <img :src="playList.coverImgUrl" alt="" />
+        <img :src="playList.coverImgUrl"  class="boder-radius" alt="" />
+        <div class="play-count iconfont icon-play">{{ playList.playCount | ellipsisPlayVolume }}</div>
       </div>
       <div class="info-wrap">
         <!-- 歌单名称 -->
@@ -16,8 +17,10 @@
           <span class="time">{{ playList.createTime | LocaleDateString }}创建</span>
         </div>
         <div class="play-wrap">
-          <span class="iconfont icon-circle-play"></span>
-          <span class="text">播放全部</span>
+          <span class="text iconfont icon-circle-play">播放全部</span>
+          <el-tooltip class="item" effect="dark" content="添加到播放列表" placement="right">
+            <span class="iconfont icon-add add-playlist"></span>
+          </el-tooltip>
         </div>
         <div class="tag-wrap">
           <span class="title">标签:</span>
@@ -27,7 +30,7 @@
         </div>
         <div class="desc-wrap">
           <span class="title">简介:</span>
-          <span class="desc">{{ playList.description }}</span>
+          <span class="desc">{{ playList.description || playList.name }}</span>
         </div>
       </div>
     </div>
@@ -43,12 +46,14 @@
             <th>时长</th>
           </thead>
           <tbody>
-            <tr class="el-table__row" v-for="(item, index) in playList.tracks" :key="index">
+            <tr class="el-table__row" @dblclick="playMusic(item.id, item.name)" v-for="(item, index) in playList.tracks" :key="index">
               <td>{{ index + 1 }}</td>
               <td>
                 <div class="img-wrap">
-                  <img :src="item.al.picUrl" alt="" />
-                  <span class="iconfont icon-play"></span>
+                  <div @click="playMusic(item.id, item.name)">
+                    <img :src="item.al.picUrl" alt="" />
+                    <span class="iconfont icon-play"></span>
+                  </div>
                 </div>
               </td>
               <td>
@@ -70,9 +75,9 @@
         </table>
       </el-tab-pane>
 
-      <el-tab-pane :label="'评论('+count+')'" name="2">
+      <el-tab-pane :label="'评论(' + (commentInfo.total + commentInfo.hotComments.length) + ')'" name="2">
         <!-- 精彩评论 -->
-        <div v-if="commentInfo.hotComments" class="comment-wrap">
+        <div v-if="commentInfo.hotComments.length > 0" class="comment-wrap">
           <p class="title">
             精彩评论<span class="number">{{ `(${commentInfo.hotComments.length})` }}</span>
           </p>
@@ -83,24 +88,27 @@
               </div>
               <div class="content-wrap">
                 <div class="content">
-                  <span class="name">{{ item.user.nickname }}</span>
+                  <span class="name">{{ item.user.nickname }}：</span>
                   <span class="comment">{{ item.content }}</span>
                 </div>
-                <!-- <div class="re-content">
-                  <span class="name">小苹果：</span>
-                  <span class="comment">还是小时候比较可爱</span>
-                </div> -->
+                <div class="re-content" v-if="item.beReplied[0]">
+                  <span class="name">{{ item.beReplied[0].user.nickname }}：</span>
+                  <span class="comment">{{ item.beReplied[0].content }}</span>
+                </div>
                 <!-- <div class="date">2020-02-12 17:26:11</div> -->
-                <div class="date">{{ item.time }}</div>
+                <div class="date">
+                  <span>{{ item.time | LocaleDateString }}</span>
+                  <span class="iconfont icon-zan float-right">{{ item.likedCount }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- 最新评论 -->
-        <div class="comment-wrap">
+        <div class="comment-wrap" v-if="commentInfo.comments.length > 0">
           <p class="title">
-            最新评论<span class="number">{{ `(${commentInfo.total})` }}</span>
+            最新评论<span class="number">({{ commentInfo.total }})</span>
           </p>
           <div class="comments-wrap">
             <div class="item" v-for="(item, index) in commentInfo.comments" :key="index">
@@ -116,21 +124,22 @@
                   <span class="name">{{ item.beReplied[0].user.nickname }}：</span>
                   <span class="comment">{{ item.beReplied[0].content }}</span>
                 </div>
-                <div class="date">{{ item.time }}</div>
+                <div class="date">{{ item.time | LocaleDateString }}</div>
               </div>
             </div>
           </div>
         </div>
-
+        <el-alert v-else title="啥也没有耶~" effect="dark" type="info" center show-icon :closable="false"> </el-alert>
         <!-- 分页器 -->
         <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[5,10, 20, 30, 50]"
-          :page-size="10"
+          hide-on-single-page
+          @size-change="sizeChagne"
+          @current-change="currentPageChange"
+          :current-page="queryInfo.offset"
+          :page-sizes="[5, 10, 20, 30, 50]"
+          :page-size="queryInfo.limit"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="count"
+          :total="commentInfo.total"
         >
         </el-pagination>
       </el-tab-pane>
@@ -139,28 +148,116 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
   name: 'playlist',
   data() {
     return {
       activeIndex: '1',
+      // 歌单信息
+      playList: {
+        creator: {
+          avatarUrl: '',
+        },
+      },
+      // 评论信息
+      commentInfo: {
+        comments: [],
+        hotComments: [],
+        total: 0,
+      },
+      queryInfo: {
+        limit: 10,
+        offset: 0,
+      },
+      // 当前歌单id
+      id: '',
     }
   },
-  computed: {
-    ...mapState(['playList', 'commentInfo']),
-    // 评论总数
-    count() {
-      return this.commentInfo.total + this.commentInfo.hotComments.length
-    },
+  created() {
+    this.id = this.$route.query.id
+    this.getMusicListDetail(this.id)
+    this.getMusicComment(this.id)
   },
   methods: {
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`)
+    // 页码发生变化
+    sizeChagne(newSize) {
+      this.queryInfo.limit = newSize
+      this.getMusicComment(this.id)
+    },
+    // 当前页发生变化
+    currentPageChange(newPage) {
+      this.queryInfo.offset = newPage
+      this.getMusicComment(this.id)
+    },
+    // 获取歌单详情
+    async getMusicListDetail(id) {
+      const { data: data } = await this.$axios.get(`/playlist/detail?id=${id}`)
+      console.log('data: ', data)
+      if (data.code == 200) {
+        console.log(1)
+        this.playList = data.playlist
+        console.log('this.playList: ', this.playList)
+      }
+    },
+    // 获取歌单评论信息
+    async getMusicComment(id) {
+      const { data: data } = await this.$axios.get('/comment/playlist', {
+        params: {
+          id: id,
+          limit: this.queryInfo.limit,
+          offset: this.queryInfo.offset,
+        },
+      })
+
+      if (data.code == 200) {
+        if (this.queryInfo.offset > 0) {
+          this.commentInfo.comments = data.comments
+        } else {
+          let newData = {
+            comments: data.comments,
+            total: data.total,
+          }
+          newData.hotComments = data.hotComments || data.topComments
+          this.commentInfo = newData
+        }
+      }
+    },
+    // 播放音乐
+    playMusic(id, name) {
+      this.$store.dispatch('getMusicUrl', id)
+      this.$notify({
+        title: '开始播放：' + name,
+        offset: 50,
+      })
     },
   },
 }
 </script>
 
-<style >
+<style scope>
+.img-wrap {
+  position: relative;
+}
+.play-count {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: white;
+}
+.float-right {
+  float: right;
+}
+.add-playlist {
+  margin: 0;
+  padding-left: 5px;
+  border-left: 2px solid;
+  height: 100%;
+  line-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.boder-radius{
+  border-radius: 15px;
+}
 </style>
