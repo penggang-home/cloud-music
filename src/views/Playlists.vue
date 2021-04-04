@@ -78,7 +78,7 @@
 import { mapMutations } from 'vuex'
 
 export default {
-  name: 'recommend',
+  name: 'Recommend',
   data() {
     return {
       paginationForm: {

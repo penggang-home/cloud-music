@@ -27,6 +27,29 @@
     <div class="right">
       <el-switch v-model="navState" @change="changeNavState"> </el-switch>
       <el-switch class="music-control-state" v-model="state" @change="changeState"> </el-switch>
+      <el-dropdown :hide-on-click="false">
+        <span class="el-dropdown-link"> 下拉菜单<i class="el-icon-arrow-down el-icon--right"></i> </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item @click.native="to('/discovery')" icon="iconfont icon-find-music">发现音乐</el-dropdown-item>
+          <el-dropdown-item @click.native="to('/playlists')" icon="iconfont icon-find-music">推荐歌单</el-dropdown-item>
+          <el-dropdown-item @click.native="to('/songs')" icon="iconfont icon-music">最新音乐</el-dropdown-item>
+          <el-dropdown-item @click.native="to('/mvs')" icon="iconfont icon-mv">最新MV</el-dropdown-item>
+          <el-dropdown-item divided>
+            <a href="https://www.bilibili.com/video/BV1RE411W776" target="_blank">教程地址 BiliBili</a>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <a href="https://gitee.com/penggang-home/cloud-music" target="_blank">前端地址 Gitee</a>
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <a href="https://github.com/Binaryify/NeteaseCloudMusicApi" target="_blank">后端地址 Github</a>
+          </el-dropdown-item>
+          <el-dropdown-item >
+            <a href="https://neteasecloudmusicapi.vercel.app/#/?id=neteasecloudmusicapi" target="_blank">API接口文档</a>
+          </el-dropdown-item>
+        
+          <el-dropdown-item disabled>版本号：v1.0.0</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
       <!-- <el-tooltip class="item" effect="dark" content="指不定哪天派上用场~" placement="bottom">
         <el-button type="danger" size="small" round v-popover:popover>
           <i class="iconfont icon-power"></i>
@@ -38,7 +61,7 @@
 
 <script>
 export default {
-  name: 'top',
+  name: 'Top',
   data() {
     return {
       // 输入提示
@@ -65,11 +88,19 @@ export default {
   },
   computed: {},
   methods: {
+    // 跳转到指定页面
+    to(str) {
+      if (this.$route.path != str) {
+        this.$router.push(str)
+      }
+    },
+    // 前进 or 后退
     go(index) {
       window.history.go(index)
     },
-    goHome(){
-      if(this.$route.path != '/discovery'){
+    // 去主页
+    goHome() {
+      if (this.$route.path != '/discovery') {
         this.$router.push('/discovery')
       }
     },
@@ -77,8 +108,8 @@ export default {
     changeState() {
       this.$Bus.$emit('switchState', this.state)
     },
-    changeNavState(){
-      this.$Bus.$emit('changeNavState',this.navState)
+    changeNavState() {
+      this.$Bus.$emit('changeNavState', this.navState)
     },
     // 搜索方法
     search() {
@@ -215,5 +246,13 @@ export default {
 .music-control-state {
   transform: rotate(-90deg);
 }
-
+.el-dropdown {
+  cursor: pointer;
+}
+.el-dropdown-menu__item {
+  user-select: none;
+}
+a {
+  color: black;
+}
 </style>

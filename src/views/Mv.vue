@@ -118,7 +118,7 @@
 
 <script>
 export default {
-  name: 'mv',
+  name: 'Mv',
   data() {
     return {
       // 当前mv的 id

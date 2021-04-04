@@ -10,7 +10,7 @@
         </li>
         <li>
           <router-link to="/playlists">
-            <span class="iconfont icon-music-list"></span>
+            <span class="iconfont icon-find-music"></span>
             推荐歌单
           </router-link>
         </li>
@@ -43,7 +43,9 @@
     </div>
     <div class="main">
       <router-view></router-view>
+
       <el-backtop target=".main"></el-backtop>
+      <Github class="github" />
     </div>
     <div :class="['player', { hide: !state }]">
       <aplayer
@@ -67,8 +69,14 @@
 // 导入辅助函数
 import { mapState } from 'vuex'
 
+// 导入组件
+import Github from '@/components/common/Github.vue'
+
 export default {
-  name: 'index',
+  name: 'Index',
+  components: {
+    Github,
+  },
   data() {
     return {
       // 播放列表最大高度
@@ -182,6 +190,7 @@ export default {
 /* 锚点跟踪 不懂别动 */
 .main {
   overflow-anchor: none;
+  position: relative;
 }
 .nav {
   position: relative;
@@ -216,7 +225,7 @@ export default {
 .nav,
 .nav ul {
   transform-origin: left;
-  transition: all .3s;
+  transition: all 0.3s;
 }
 .hide-nav {
   transform: rotateY(90deg);
@@ -231,5 +240,11 @@ export default {
   height: auto;
   object-fit: cover;
   border-radius: 5px;
+}
+.github {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
 }
 </style>

@@ -119,7 +119,7 @@
 <script>
 import { mapActions } from 'vuex'
 export default {
-  name: 'result',
+  name: 'Result',
   data() {
     return {
       activeIndex: 'songs',

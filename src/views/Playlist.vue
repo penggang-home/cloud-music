@@ -154,7 +154,7 @@
 
 <script>
 export default {
-  name: 'playlist',
+  name: 'Playlist',
   data() {
     return {
       activeIndex: '1',

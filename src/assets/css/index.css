@@ -5,8 +5,9 @@ html {
   padding: 0;
   font-weight: 400;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB,
- Microsoft YaHei, '\5FAE\8F6F\96C5\9ED1', Arial, sans-serif;
+    Microsoft YaHei, '\5FAE\8F6F\96C5\9ED1', Arial, sans-serif;
 }
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -36,7 +37,7 @@ ol {
   color: #c3473a;
 }
 
-.el-table th > .cell {
+.el-table th>.cell {
   font-weight: normal;
   color: black;
 }
@@ -95,7 +96,7 @@ ol {
   width: 200px;
 }
 
-.el-table .song-wrap > span {
+.el-table .song-wrap>span {
   margin-top: 20px;
   display: inline-block;
   color: #bebebe;
@@ -341,7 +342,7 @@ ol {
   position: relative;
 }
 
-.discovery-container .mvs .items .item .img-wrap > .icon-play {
+.discovery-container .mvs .items .item .img-wrap>.icon-play {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -358,11 +359,11 @@ ol {
   opacity: 0;
 }
 
-.discovery-container .mvs .items .item .img-wrap > .icon-play::before {
+.discovery-container .mvs .items .item .img-wrap>.icon-play::before {
   transform: translateX(3px);
 }
 
-.discovery-container .mvs .items .item:hover > .icon-play {
+.discovery-container .mvs .items .item:hover>.icon-play {
   opacity: 1;
 }
 
@@ -417,7 +418,7 @@ ol {
   margin-right: 25px;
 }
 
-.mv-container .mv-wrap .date{
+.mv-container .mv-wrap .date {
   color: #bebebe;
   font-size: 14px;
 }
@@ -553,7 +554,7 @@ ol {
   margin-right: 10px;
 }
 
-.mv-container .mv-recommend .mvs .items .item .img-wrap > .icon-play {
+.mv-container .mv-recommend .mvs .items .item .img-wrap>.icon-play {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -570,11 +571,11 @@ ol {
   opacity: 0;
 }
 
-.mv-container .mv-recommend .mvs .items .item .img-wrap > .icon-play::before {
+.mv-container .mv-recommend .mvs .items .item .img-wrap>.icon-play::before {
   transform: translateX(3px);
 }
 
-.mv-container .mv-recommend .mvs .items .item .img-wrap:hover > .icon-play {
+.mv-container .mv-recommend .mvs .items .item .img-wrap:hover>.icon-play {
   opacity: 1;
 }
 
@@ -627,40 +628,40 @@ ol {
   padding-top: 20px;
 }
 
-.mvs-container .filter-wrap > div {
+.mvs-container .filter-wrap>div {
   margin-bottom: 30px;
   vertical-align: baseline;
   display: flex;
   align-items: center;
 }
 
-.mvs-container .filter-wrap > div span {
+.mvs-container .filter-wrap>div span {
   font-size: 14px;
   height: 100%;
 }
 
-.mvs-container .filter-wrap > div span.title {
+.mvs-container .filter-wrap>div span.title {
   margin: 20px;
   color: gray;
   cursor: pointer;
   padding: 5px 20px;
 }
 
-.mvs-container .filter-wrap > div span.title.active {
+.mvs-container .filter-wrap>div span.title.active {
   color: #ee0000;
   background-color: #fcf6f5;
   border-radius: 20px;
 }
 
-.mvs-container .filter-wrap > div span.title::before {
+.mvs-container .filter-wrap>div span.title::before {
   content: '', pos;
 }
 
-.mvs-container .filter-wrap > div ul {
+.mvs-container .filter-wrap>div ul {
   display: flex;
 }
 
-.mvs-container .filter-wrap > div ul li:not(:last-child) {
+.mvs-container .filter-wrap>div ul li:not(:last-child) {
   border-right: 1px solid #f2f2f1;
 }
 
@@ -707,6 +708,9 @@ ol {
 }
 
 .mvs-container .mvs .items .item .info-wrap .name {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   font-size: 15px;
 }
 
@@ -777,9 +781,10 @@ ol {
   color: white;
 }
 
-.play-wrap{
+.play-wrap {
   user-select: none;
 }
+
 /* .playlist-container .top-wrap .info-wrap .play-wrap span.iconfont {
   margin-right: 8px;
 } */
@@ -1090,7 +1095,7 @@ ol {
   position: relative;
 }
 
-.result-container .items .item .img-wrap > .icon-play {
+.result-container .items .item .img-wrap>.icon-play {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1107,11 +1112,11 @@ ol {
   opacity: 0;
 }
 
-.result-container .items .item .img-wrap > .icon-play::before {
+.result-container .items .item .img-wrap>.icon-play::before {
   transform: translateX(3px);
 }
 
-.result-container .items .item .img-wrap:hover > .icon-play {
+.result-container .items .item .img-wrap:hover>.icon-play {
   opacity: 1;
 }
 
@@ -1181,7 +1186,7 @@ ol {
   color: #ee0000;
 }
 
-.songs-container .song-table .song-wrap > span {
+.songs-container .song-table .song-wrap>span {
   margin-top: 20px;
   display: inline-block;
   color: #bebebe;
@@ -1273,7 +1278,7 @@ ol {
   padding: 10px 20px;
 }
 
-.index-container .main > div {
+.index-container .main>div {
   max-width: 1100px;
   margin: 0 auto;
 }
@@ -1390,68 +1395,89 @@ ol {
   padding-top: 46px;
 }
 
-.cursor-pointer{
+.cursor-pointer {
   cursor: pointer;
 }
-.discovery-container .mvs .items .item .img-wrap{
+
+.discovery-container .mvs .items .item .img-wrap {
   cursor: pointer;
 }
-.dflex{
+
+.dflex {
   display: flex;
   justify-content: center;
   align-items: center;
 }
-.top-container .center .el-input--prefix .el-input__inner{
+
+.top-container .center .el-input--prefix .el-input__inner {
   border-radius: 50px;
 }
-.m-0{
+
+.m-0 {
   margin: 0 !important;
 }
-.el-backtop{
+
+.el-backtop {
   bottom: 80px !important;
 }
 
 /* 播放器样式重置 */
-.aplayer{
+.aplayer {
   margin: 0;
   border-radius: 0;
 }
-.index-container .player{
+
+.index-container .player {
   height: auto;
 }
-.aplayer.aplayer-withlrc .aplayer-pic,.aplayer.aplayer-withlrc .aplayer-info{
+
+.aplayer.aplayer-withlrc .aplayer-pic,
+.aplayer.aplayer-withlrc .aplayer-info {
   height: 68px;
 }
-.aplayer.aplayer-withlrc .aplayer-lrc{
+
+.aplayer.aplayer-withlrc .aplayer-lrc {
   transform: translateY(-20px);
 }
-.aplayer .aplayer-lrc:after, .aplayer .aplayer-lrc:before{
+
+.aplayer .aplayer-lrc:after,
+.aplayer .aplayer-lrc:before {
   content: none;
 }
+
 /* fixed：true第二次改动 */
-.aplayer .aplayer-pic{
+.aplayer .aplayer-pic {
   width: 76px;
 }
-.aplayer.aplayer-fixed,.aplayer.aplayer-fixed .aplayer-body{
+
+.aplayer.aplayer-fixed,
+.aplayer.aplayer-fixed .aplayer-body {
   max-width: none;
 }
-.aplayer.aplayer-withlist .aplayer-info,.aplayer .aplayer-info{
+
+.aplayer.aplayer-withlist .aplayer-info,
+.aplayer .aplayer-info {
   width: calc(100vw - 66px);
 }
-.aplayer.aplayer-fixed .aplayer-lrc{
+
+.aplayer.aplayer-fixed .aplayer-lrc {
   z-index: 999;
   transform: translateY(-14px);
 }
-.aplayer.aplayer-fixed .aplayer-miniswitcher{
+
+.aplayer.aplayer-fixed .aplayer-miniswitcher {
   display: none;
 }
-.aplayer .aplayer-list::-webkit-scrollbar{
+
+.aplayer .aplayer-list::-webkit-scrollbar {
   width: 0;
 }
-.icon-zan{
+
+.icon-zan {
   color: #ee0000;
 }
-.add-music{
+
+.add-music {
   color: #ee0000;
   margin-left: 4px;
 }

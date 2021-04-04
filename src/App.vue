@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import top from './components/01.top.vue'
-import index from './components/02.index.vue'
+import top from './components/Top.vue'
+import index from './components/Index.vue'
 export default {
   name: 'app',
   components: {

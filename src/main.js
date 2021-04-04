@@ -16,6 +16,8 @@ Vue.use(VueLazyLoad, {
   // listenEvents: [ 'scroll' ]
 })
 
+// 背景 悬浮文字
+// import './utils/background'
 
 // 导入Aplayer
 import APlayer from '@moefe/vue-aplayer';

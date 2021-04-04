@@ -65,7 +65,7 @@
 
 <script>
 export default {
-  name: 'songs',
+  name: 'Songs',
   data() {
     return {
       // 歌曲列表

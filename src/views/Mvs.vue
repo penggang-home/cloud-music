@@ -94,7 +94,7 @@
 
 <script>
 export default {
-  name: 'mvs',
+  name: 'Mvs',
   data() {
     return {
       // 分页信息

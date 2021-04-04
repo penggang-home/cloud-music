@@ -73,7 +73,7 @@
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'discovery',
+  name: 'Discovery',
   data() {
     return {
       // 轮播图图片地址数组

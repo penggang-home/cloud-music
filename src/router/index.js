@@ -4,14 +4,13 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 // 导入对应的路由
-import discovery from '@/views/01.discovery.vue'
-import playlists from '@/views/02.playlists.vue'
-import songs from '@/views/03.songs.vue'
-import mvs from '@/views/04.mvs.vue'
-import result from '@/views/05.result.vue'
-import playlist from '@/views/06.playlist.vue'
-import mv from '@/views/07.mv.vue'
-import test from '@/views/test.vue'
+import Discovery from '@/views/Discovery.vue'
+import Playlists from '@/views/Playlists.vue'
+import Songs from '@/views/Songs.vue'
+import Mvs from '@/views/Mvs.vue'
+import Result from '@/views/Result.vue'
+import Playlist from '@/views/Playlist.vue'
+import Mv from '@/views/Mv.vue'
 
 const router = new VueRouter({
   routes: [
@@ -22,44 +21,39 @@ const router = new VueRouter({
     {
       // 发现音乐
       path: '/discovery',
-      component: discovery
+      component: Discovery
     },
     {
       // 推荐歌单
       path: '/playlists',
-      component: playlists
+      component: Playlists
     },
     {
       // 推荐歌单
       path: '/playlist',
-      component: playlist
+      component: Playlist
     },
     {
       // 最新音乐
       path: '/songs',
-      component: songs
+      component: Songs
     },
     {
       // 最新音乐
       path: '/mvs',
-      component: mvs
+      component: Mvs
     },
     // mv详情
     {
       path: '/mv',
-      component: mv
+      component: Mv
     },
     // 搜索结果页
     {
       path: '/result',
-      component: result
+      component: Result
     },
-    {
-      path: '/test',
-      component: test
-    }
   ],
-  mode: 'history'
 })
 
 export default router
