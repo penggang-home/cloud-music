@@ -2,7 +2,7 @@
   <div class="playlist-container">
     <div class="top-wrap">
       <div class="img-wrap">
-        <img :src="playList.coverImgUrl"  class="boder-radius" alt="" />
+        <img v-lazy="playList.coverImgUrl" class="boder-radius" alt="" />
         <div class="play-count iconfont icon-play">{{ playList.playCount | ellipsisPlayVolume }}</div>
       </div>
       <div class="info-wrap">
@@ -10,16 +10,18 @@
         <p class="title">{{ playList.name }}</p>
         <div class="author-wrap">
           <!-- 创建者头像 -->
-          <img class="avatar" :src="playList.creator.avatarUrl" alt="" />
+          <img class="avatar" v-lazy="playList.creator.avatarUrl" alt="" />
           <!-- 创建者昵称 -->
           <span class="name">{{ playList.creator.nickname }}</span>
           <!-- 创建时间 -->
           <span class="time">{{ playList.createTime | LocaleDateString }}创建</span>
         </div>
         <div class="play-wrap">
-          <span class="text iconfont icon-circle-play">播放全部</span>
+          <el-tooltip class="item" effect="dark" content="替换播放列表" placement="bottom">
+            <span class="text iconfont icon-circle-play" @click="playAll">播放全部</span>
+          </el-tooltip>
           <el-tooltip class="item" effect="dark" content="添加到播放列表" placement="right">
-            <span class="iconfont icon-add add-playlist"></span>
+            <span class="iconfont icon-add add-playlist" @click="addAplayer"></span>
           </el-tooltip>
         </div>
         <div class="tag-wrap">
@@ -51,7 +53,7 @@
               <td>
                 <div class="img-wrap">
                   <div @click="playMusic(item.id, item.name)">
-                    <img :src="item.al.picUrl" alt="" />
+                    <img v-lazy="item.al.picUrl" alt="" />
                     <span class="iconfont icon-play"></span>
                   </div>
                 </div>
@@ -61,7 +63,10 @@
                   <div class="name-wrap">
                     <!-- 音乐标题 -->
                     <span>{{ item.name }}</span>
-                    <span class="iconfont icon-mv"></span>
+                    <el-tooltip class="item" effect="dark" content="添加到播放列表" :enterable="false" placement="bottom">
+                      <span @click="playMusic(item.id, item.name, false)" class="iconfont add-music icon-add-list"></span>
+                    </el-tooltip>
+                    <span @click="playMv(item.mvid)" v-if="item.mvid" class="iconfont icon-mv"></span>
                   </div>
                 </div>
               </td>
@@ -84,7 +89,7 @@
           <div class="comments-wrap">
             <div class="item" v-for="(item, index) in commentInfo.hotComments" :key="index">
               <div class="icon-wrap">
-                <img :src="item.user.avatarUrl" alt="" />
+                <img v-lazy="item.user.avatarUrl" alt="" />
               </div>
               <div class="content-wrap">
                 <div class="content">
@@ -113,7 +118,7 @@
           <div class="comments-wrap">
             <div class="item" v-for="(item, index) in commentInfo.comments" :key="index">
               <div class="icon-wrap">
-                <img :src="item.user.avatarUrl" alt="" />
+                <img v-lazy="item.user.avatarUrl" alt="" />
               </div>
               <div class="content-wrap">
                 <div class="content">
@@ -132,7 +137,7 @@
         <el-alert v-else title="啥也没有耶~" effect="dark" type="info" center show-icon :closable="false"> </el-alert>
         <!-- 分页器 -->
         <el-pagination
-          hide-on-single-page
+          :hide-on-single-page="true"
           @size-change="sizeChagne"
           @current-change="currentPageChange"
           :current-page="queryInfo.offset"
@@ -223,12 +228,43 @@ export default {
       }
     },
     // 播放音乐
-    playMusic(id, name) {
-      this.$store.dispatch('getMusicUrl', id)
-      this.$notify({
-        title: '开始播放：' + name,
-        offset: 50,
+    playMusic(id, name, insert = true) {
+      this.$store.dispatch('getAudioInfo', {
+        id,
+        isInsert: insert,
       })
+      if (insert) {
+        insert && this.$Bus.$emit('switch')
+        this.$notify({
+          title: '开始播放：' + name,
+          offset: 50,
+        })
+      } else {
+        this.$notify({
+          title: name,
+          message: `已添加到播放列表~`,
+          offset: 50,
+        })
+      }
+    },
+    // 添加歌单到Aplayer
+    addAplayer() {
+      this.playList.tracks.forEach(item => {
+        // console.log(item.id);
+        this.$store.dispatch('getAudioInfo', { id: item.id })
+      })
+      setTimeout(() => {
+        console.log('提交播放')
+        this.$Bus.$emit('play')
+      }, 400)
+    },
+    // 播放全部
+    playAll() {
+      this.$store.commit('clear')
+      this.addAplayer()
+    },
+    playMv(id) {
+      this.$router.push(`/mv?id=${id}`)
     },
   },
 }
@@ -257,7 +293,7 @@ export default {
   align-items: center;
   justify-content: center;
 }
-.boder-radius{
+.boder-radius {
   border-radius: 15px;
 }
 </style>

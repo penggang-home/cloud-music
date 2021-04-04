@@ -4,7 +4,7 @@
     <el-carousel indicator-position="none" loop :interval="4000" type="card">
       <el-carousel-item v-for="(item, index) in banners" :key="index">
         <a :href="item.url">
-          <img :src="item.imageUrl" alt="" />
+          <img v-lazy="item.imageUrl" alt="" />
         </a>
       </el-carousel-item>
     </el-carousel>
@@ -17,7 +17,7 @@
             <div class="desc-wrap">
               <span class="desc">{{ item.copywriter }}</span>
             </div>
-            <img :src="item.picUrl" alt="" />
+            <img v-lazy="item.picUrl" alt="" />
             <span class="iconfont icon-play"></span>
           </div>
           <p class="name">{{ item.name }}</p>
@@ -30,7 +30,7 @@
       <div class="items">
         <div class="item cursor-pointer" @click="playMusic(item.id)" v-for="(item, index) in songs" :key="index">
           <div class="img-wrap">
-            <img :src="item.picUrl" alt="" />
+            <img v-lazy="item.picUrl" alt="" />
             <span class="iconfont icon-play"></span>
           </div>
           <div class="song-wrap">
@@ -46,7 +46,7 @@
       <div class="items">
         <div class="item" v-for="(item, index) in mvs" :key="index">
           <div class="img-wrap" @click="playMv(item.id)">
-            <img :src="item.picUrl" alt="" />
+            <img v-lazy="item.picUrl" alt="" />
             <span class="iconfont icon-play"></span>
             <div class="num-wrap">
               <div class="iconfont icon-play"></div>
@@ -70,7 +70,7 @@
 
 <script>
 // 导入辅助函数
-import { mapMutations, mapActions } from 'vuex'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'discovery',
@@ -118,49 +118,26 @@ export default {
   },
   methods: {
     // 通过辅助函数把mutations里的函数引用到这里
-    ...mapMutations(['updateMusicUrl']),
-    ...mapActions(['getMusicListDetail', 'getMusicComment']),
+    ...mapActions(['getAudioInfo']),
     // 点击按钮，播放音乐
     async playMusic(id) {
-      console.log(id)
-      const { data: data } = await this.$axios.get('/song/url', {
-        params: {
-          id,
-        },
-      })
-      if (data.code == 200) {
-        // 设置给父组件的 音乐地址
-        let url = data.data[0].url
+      this.getAudioInfo({ id, isInsert: true })
+      this.$Bus.$emit('switch')
+      // 1.利用 $parent传递数据
+      // this.$parent.musicUrl = data.data[0].url
 
-        // 1.利用 $parent传递数据
-        // this.$parent.musicUrl = data.data[0].url
+      // 2.利用事件总线传递数据 需要在main.js中 Vue.prototype.$Bus = new Vue()
+      // this.$Bus.$emit('newMusic',url)
 
-        // 2.利用事件总线传递数据 需要在main.js中 Vue.prototype.$Bus = new Vue()
-        // this.$Bus.$emit('newMusic',url)
+      // 3.利用 vuex 传递
+      // 3.1 通过commit 触发 mutations
+      // this.$store.commit('updateMusicUrl', url)
 
-        // 3.利用 vuex 传递
-        // 3.1 通过commit 触发 mutations
-        // this.$store.commit('updateMusicUrl', url)
-
-        // 3.2通过导入的辅助函数触发 vuex
-        this.updateMusicUrl(url)
-      }
-      console.log(data)
+      // 3.2通过导入的辅助函数触发 vuex
     },
     // 去往歌单详情页
     toPlayListDetail(id) {
-      // 获取歌单信息
-      this.getMusicListDetail(id)
-      // 获取歌单评论信息
-      this.getMusicComment({
-        // id: 歌单 id
-        //可选参数 :
-        // limit: 取出评论数量 , 默认为 20
-        // offset: 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*20, 其中 20 为 limit 的值
-        // before: 分页参数,取上一页最后一项的 time 获取下一页数据(获取超过5000条评论的时候需要用到)
-        id,
-      })
-      this.$router.push('/playlist')
+      this.$router.push(`/playlist?id=${id}`)
     },
     // 播放Mv
     playMv(id) {

@@ -4,7 +4,7 @@
     <div class="top-card">
       <div class="icon-wrap">
         <!-- 封面 -->
-        <img :src="topList.coverImgUrl" @click="getMusicUrl(topList.id)" alt="" />
+        <img v-lazy="topList.coverImgUrl" alt="" />
       </div>
       <div class="content-wrap">
         <div class="tag">精品歌单</div>
@@ -16,7 +16,7 @@
         </div>
       </div>
       <!-- 背景 -->
-      <img :src="topList.coverImgUrl" alt="" class="bg" />
+      <img v-lazy="topList.coverImgUrl" alt="" class="bg" />
       <div class="bg-mask"></div>
     </div>
     <div class="tab-container">
@@ -40,13 +40,13 @@
       <!-- tab的内容区域 -->
       <div class="tab-content">
         <div class="items">
-          <div class="item" v-for="(item, index) in list" :key="index">
+          <div class="item" @click="toPlayListDetail(item.id)" v-for="(item, index) in list" :key="index">
             <div class="img-wrap">
               <div class="num-wrap">
                 播放量:
                 <span class="num">{{ item.playCount }}</span>
               </div>
-              <img :src="item.coverImgUrl" alt="" />
+              <img v-lazy="item.coverImgUrl" alt="" />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">{{ item.name }}</p>
@@ -61,6 +61,7 @@
       page-size 每页多少条数据
      -->
     <el-pagination
+      :hide-on-single-page="true"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
       :current-page="paginationForm.page"
@@ -152,6 +153,10 @@ export default {
         this.paginationForm.total = data.total
         this.list = data.playlists
       }
+    },
+    // 去歌单详情页
+    toPlayListDetail(id) {
+      this.$router.push(`/playlist?id=${id}`)
     },
   },
 }

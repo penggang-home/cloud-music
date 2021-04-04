@@ -59,13 +59,12 @@
         </ul>
       </div>
     </div>
-    <!-- mv容器 -->
     <!-- 推荐MV -->
     <div class="mvs">
       <div class="items">
-        <div class="item" @click="toMv(10)" v-for="(item, index) in mvlist" :key="index">
+        <div class="item" @click="toMv(item.id)" v-for="(item, index) in mvlist" :key="index">
           <div class="img-wrap">
-            <img :src="item.cover" alt="" />
+            <img v-lazy="item.cover" alt="" />
             <div class="num-wrap">
               <div class="iconfont icon-play"></div>
               <div class="num">{{ item.playCount | ellipsisPlayVolume }}</div>
@@ -79,6 +78,7 @@
       </div>
       <!-- 分页器 -->
       <el-pagination
+        :hide-on-single-page="true"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="paginationForm.page"
@@ -194,7 +194,6 @@ export default {
           offset: this.paginationForm.page,
         },
       })
-      console.log('data: ', data)
       if (data.code == 200) {
         this.mvlist = data.data
         // 当切换页码和页容量的 的时候未返回total,不能赋值
@@ -202,8 +201,6 @@ export default {
           this.paginationForm.total = data.count
         }
       }
-
-      console.log(this.paginationForm)
     },
   },
 }

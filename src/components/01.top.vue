@@ -2,9 +2,14 @@
   <div class="top-container">
     <div class="left dflex">
       <img src="/images/home.svg" class="homeImg" align="middle" alt="" />
-      <el-tooltip class="item" effect="dark" content="去主页：www.bookbook.cc" placement="right">
+      <el-tooltip class="item" :enterable="false" effect="dark" content="去主页：www.bookbook.cc" placement="right">
         <a href="https://www.bookbook.cc" target="blank">bookbook.cc</a>
       </el-tooltip>
+      <div class="control-go">
+        <el-button type="info" size="small" class="clear-icon el-icon-arrow-left" @click="go(-1)" circle></el-button>
+        <el-button type="info" size="small" class="clear-icon el-icon-arrow-right" @click="go(1)" circle></el-button>
+        <el-button type="info" size="small" class="clear-icon iconfont icon-zhuye2" @click="goHome" circle></el-button>
+      </div>
     </div>
     <div class="center">
       <el-autocomplete
@@ -20,12 +25,13 @@
       ></el-autocomplete>
     </div>
     <div class="right">
-      <el-switch v-model="state" @change="changeState"> </el-switch>
-      <el-tooltip class="item" effect="dark" content="指不定哪天派上用场~" placement="bottom">
+      <el-switch v-model="navState" @change="changeNavState"> </el-switch>
+      <el-switch class="music-control-state" v-model="state" @change="changeState"> </el-switch>
+      <!-- <el-tooltip class="item" effect="dark" content="指不定哪天派上用场~" placement="bottom">
         <el-button type="danger" size="small" round v-popover:popover>
           <i class="iconfont icon-power"></i>
         </el-button>
-      </el-tooltip>
+      </el-tooltip> -->
     </div>
   </div>
 </template>
@@ -49,6 +55,8 @@ export default {
       searchKeywords: '',
       // 开关状态  是否显示音乐面板
       state: true,
+      // 是否显示导航栏 nav
+      navState: true,
     }
   },
   created() {
@@ -57,14 +65,20 @@ export default {
   },
   computed: {},
   methods: {
-    // 改变开关装填的回调
-    changeState() {
-      // this.$store.commit('updateIsControl', state)
-      this.$Bus.$emit('switchState',this.state)
+    go(index) {
+      window.history.go(index)
     },
-    // 返回主页
-    goHome() {
-      this.$router.push('/discovery')
+    goHome(){
+      if(this.$route.path != '/discovery'){
+        this.$router.push('/discovery')
+      }
+    },
+    // 改变开关状态的回调
+    changeState() {
+      this.$Bus.$emit('switchState', this.state)
+    },
+    changeNavState(){
+      this.$Bus.$emit('changeNavState',this.navState)
     },
     // 搜索方法
     search() {
@@ -182,6 +196,7 @@ export default {
   object-fit: cover;
 }
 .left {
+  position: relative;
   flex-basis: 200px;
   text-align: center;
 }
@@ -190,4 +205,15 @@ export default {
   font-size: 22px;
   color: black;
 }
+.control-go {
+  position: absolute;
+  right: -117px;
+}
+.clear-icon {
+  outline: none;
+}
+.music-control-state {
+  transform: rotate(-90deg);
+}
+
 </style>

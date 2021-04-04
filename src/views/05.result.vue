@@ -23,8 +23,12 @@
                   <div class="name-wrap">
                     <!-- 歌名 -->
                     <span>{{ item.name }}</span>
+                    <!-- 添加到播放列表 -->
+                    <el-tooltip class="item" effect="dark" content="添加到播放列表" :enterable="false" placement="bottom">
+                      <span @click="playMusic(item.id, item.name, false)" class="iconfont add-music icon-add-list"></span>
+                    </el-tooltip>
                     <!-- mv的图标 -->
-                    <span v-if="item.mvid" class="iconfont icon-mv"></span>
+                    <span @click="playMv(item.mvid)" v-if="item.mvid" class="iconfont icon-mv"></span>
                   </div>
                 </div>
               </td>
@@ -37,6 +41,7 @@
           </tbody>
         </table>
         <el-pagination
+          :hide-on-single-page="true"
           @size-change="sizeChange"
           @current-change="currentPageChange"
           :current-page="queryInfo.offset"
@@ -47,6 +52,7 @@
         >
         </el-pagination>
       </el-tab-pane>
+
       <el-tab-pane label="歌单" name="lists">
         <el-alert v-if="count < 1" title="什么东西也没有耶~" effect="dark" type="info" center show-icon :closable="false"> </el-alert>
         <div class="items">
@@ -56,13 +62,14 @@
                 播放量：
                 <span class="num">{{ item.playCount | ellipsisPlayVolume }}</span>
               </div>
-              <img :src="item.coverImgUrl" alt="" />
+              <img v-lazy="item.coverImgUrl" alt="" />
               <span class="iconfont icon-play"></span>
             </div>
             <p class="name">{{ item.name }}</p>
           </div>
         </div>
         <el-pagination
+          :hide-on-single-page="true"
           @size-change="sizeChange"
           @current-change="currentPageChange"
           :current-page="queryInfo.offset"
@@ -73,12 +80,13 @@
         >
         </el-pagination>
       </el-tab-pane>
+
       <el-tab-pane label="MV" name="mv">
         <el-alert v-if="count < 1" title="什么东西也没有耶~" effect="dark" type="info" center show-icon :closable="false"> </el-alert>
         <div class="items mv">
-          <div class="item" v-for="(item, index) in searchResult.mvs" :key="index">
+          <div class="item" @click="playMv(item.id)" v-for="(item, index) in searchResult.mvs" :key="index">
             <div class="img-wrap">
-              <img :src="item.cover" alt="" />
+              <img v-lazy="item.cover" alt="" />
               <span class="iconfont icon-play"></span>
               <div class="num-wrap">
                 <div class="iconfont icon-play"></div>
@@ -93,6 +101,7 @@
           </div>
         </div>
         <el-pagination
+          :hide-on-single-page="true"
           @size-change="sizeChange"
           @current-change="currentPageChange"
           :current-page="queryInfo.offset"
@@ -224,16 +233,31 @@ export default {
       }
     },
     // 播放音乐
-    playMusic(id, name) {
-      this.$store.dispatch('getAudioInfo', id)
-      this.$notify({
-        title: '开始播放：' + name,
-        offset: 50,
+    playMusic(id, name, insert = true) {
+      this.$store.dispatch('getAudioInfo', {
+        id,
+        isInsert: insert,
       })
+      if (insert) {
+        insert && this.$Bus.$emit('switch')
+        this.$notify({
+          title: '开始播放：' + name,
+          offset: 50,
+        })
+      } else {
+        this.$notify({
+          title: name,
+          message: `已添加到播放列表~`,
+          offset: 50,
+        })
+      }
     },
     // 查看歌单
     playList(id) {
       this.$router.push(`/playlist?id=${id}`)
+    },
+    playMv(id) {
+      this.$router.push(`/mv?id=${id}`)
     },
   },
 }
