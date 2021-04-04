@@ -1,19 +1,10 @@
-# hmplayer
 
-## Project setup
-```
-npm install
-```
+## 仿网易播放器 CloudMusic | 米奇妙妙屋
+作者：bookbook.cc
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## 说明
+如果你觉得本项目对你有帮助的话，请点个 Star 支持一下🐷(一个赞都没有，太可怜了)
 
-### Compiles and minifies for production
-```
-npm run build
-```
+在学习该项目的过程中,如果你遇到任何问题都可以联系我,文末有联系方法。
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+[www.bookbook.cc](https://www.bookbook.cc/) 这是我的个人主页,你也可以在上面找到我的联系方式

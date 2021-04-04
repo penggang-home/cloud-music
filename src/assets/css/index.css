@@ -1452,7 +1452,7 @@ ol {
 
 .aplayer.aplayer-fixed,
 .aplayer.aplayer-fixed .aplayer-body {
-  max-width: none;
+  max-width: none !important;
 }
 
 .aplayer.aplayer-withlist .aplayer-info,
@@ -1466,11 +1466,11 @@ ol {
 }
 
 .aplayer.aplayer-fixed .aplayer-miniswitcher {
-  display: none;
+  display: none !important;
 }
 
 .aplayer .aplayer-list::-webkit-scrollbar {
-  width: 0;
+  width: 0 !important;
 }
 
 .icon-zan {
