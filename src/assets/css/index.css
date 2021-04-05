@@ -1461,7 +1461,7 @@ ol {
 }
 
 .aplayer.aplayer-fixed .aplayer-lrc {
-  z-index: 999;
+  z-index: 999 !important;
   transform: translateY(-14px);
 }
 

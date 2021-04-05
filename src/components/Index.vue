@@ -89,7 +89,7 @@ export default {
       // 音频循环顺序, 可选值: 'list', 'random'
       order: 'random',
       // 自动播放
-      autoplay: true,
+      autoplay: false,
       // 吸底模式
       fixed: true,
       // 是否显示音乐控制面板

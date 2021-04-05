@@ -7,8 +7,8 @@ import NProgress from "nprogress"
 // import "nprogress/nprogress.css" 
 
 // 接口地址
-// axios.defaults.baseURL = 'https://autumnfish.cn/'
-axios.defaults.baseURL = 'http://localhost:3000'
+axios.defaults.baseURL = 'https://autumnfish.cn/'
+// axios.defaults.baseURL = 'http://localhost:3000'
 
 // 添加 请求头 和 进度条 NProgress.start()
 axios.interceptors.request.use(config => {
