@@ -1,7 +1,7 @@
 <template>
   <div class="top-container">
     <div class="left dflex">
-      <img src="/images/home.svg" class="homeImg" align="middle" alt="" />
+      <img src="~/assets/images/home.svg" class="homeImg" align="middle" alt="" />
       <el-tooltip class="item" :enterable="false" effect="dark" content="去主页：www.bookbook.cc" placement="right">
         <a href="https://www.bookbook.cc" target="blank">bookbook.cc</a>
       </el-tooltip>
