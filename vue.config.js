@@ -16,5 +16,5 @@ module.exports = {
     port: 8080
   },
   // outputDir:"music",
-  // publicPath:"/music/"
+  // publicPath:"/"
 }
