@@ -15,6 +15,6 @@ module.exports = {
     open: "true",
     port: 8080
   },
-  outputDir:"music",
-  publicPath:"/music/"
+  // outputDir:"music",
+  // publicPath:"/music/"
 }
