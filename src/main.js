@@ -12,12 +12,11 @@ Vue.use(VueLazyLoad, {
   preLoad: 1.3,
   error: import('./assets/images/error.svg'), //加载失败显示的图片
   loading: require('./assets/images/loadding.svg'), // 加载中显示的图片
-  attempt: 3,
+  attempt: 3, 
   // listenEvents: [ 'scroll' ]
 })
 
-// 背景 悬浮文字
-// import './utils/background'
+
 
 // 导入Aplayer
 import APlayer from '@moefe/vue-aplayer';
